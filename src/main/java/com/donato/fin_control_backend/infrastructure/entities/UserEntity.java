@@ -31,7 +31,6 @@ public class UserEntity {
     @Column(name = "password_hash", length = 255, nullable = false)
     private String passwordHash;
 
-
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
