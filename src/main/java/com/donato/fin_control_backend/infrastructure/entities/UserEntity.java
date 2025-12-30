@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -22,10 +21,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, nullable = false, unique = true)
-    private String username;
-
-    @Column(length = 255, unique = true)
+    @Column(length = 255, nullable = false, unique = true)
     private String email;
 
     @Column(name = "password_hash", length = 255, nullable = false)
@@ -39,4 +35,3 @@ public class UserEntity {
 
 
 }
-

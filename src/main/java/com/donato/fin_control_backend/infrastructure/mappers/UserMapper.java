@@ -14,7 +14,6 @@ public final class UserMapper {
         }
         return User.builder()
                 .id(entity.getId())
-                .username(entity.getUsername())
                 .email(entity.getEmail())
                 .passwordHash(entity.getPasswordHash())
                 .createdAt(entity.getCreatedAt())
@@ -28,7 +27,6 @@ public final class UserMapper {
         }
         return UserEntity.builder()
                 .id(domain.getId())
-                .username(domain.getUsername())
                 .email(domain.getEmail())
                 .passwordHash(domain.getPasswordHash())
                 .createdAt(domain.getCreatedAt())
