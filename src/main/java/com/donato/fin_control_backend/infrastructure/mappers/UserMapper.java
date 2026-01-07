@@ -1,5 +1,6 @@
 package com.donato.fin_control_backend.infrastructure.mappers;
 
+import com.donato.fin_control_backend.core.domain.Password;
 import com.donato.fin_control_backend.core.domain.User;
 import com.donato.fin_control_backend.infrastructure.entities.UserEntity;
 
@@ -15,7 +16,7 @@ public final class UserMapper {
         return User.builder()
                 .id(entity.getId())
                 .email(entity.getEmail())
-                .passwordHash(entity.getPasswordHash())
+                .passwordHash(mapToPassword(entity.getPasswordHash()))
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
@@ -28,9 +29,17 @@ public final class UserMapper {
         return UserEntity.builder()
                 .id(domain.getId())
                 .email(domain.getEmail())
-                .passwordHash(domain.getPasswordHash())
+                .passwordHash(mapToHash(domain.getPasswordHash()))
                 .createdAt(domain.getCreatedAt())
                 .updatedAt(domain.getUpdatedAt())
                 .build();
+    }
+
+    private static Password mapToPassword(String hash) {
+        return hash == null ? null : Password.of(hash);
+    }
+
+    private static String mapToHash(Password password) {
+        return password == null ? null : password.getValue();
     }
 }
