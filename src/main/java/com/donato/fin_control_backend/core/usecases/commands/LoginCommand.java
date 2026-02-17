@@ -15,7 +15,7 @@ public record LoginCommand(Email email, Password password) {
         }
         return new LoginCommand(
                 Email.of(loginDTO.getEmail()),
-                Password.of(loginDTO.getPasswordHash())
+                Password.of(loginDTO.getPassword())
         );
     }
 }

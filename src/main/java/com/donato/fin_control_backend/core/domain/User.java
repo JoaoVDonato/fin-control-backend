@@ -23,6 +23,8 @@ public class User implements UserDetails {
     private String email;
     // Hash da senha (BCrypt ou similar)
     private Password passwordHash;
+    // Indica se o usuário está ativo
+    private boolean active;
     // Data de criação do registro
     private LocalDateTime createdAt;
     // Última atualização do registro

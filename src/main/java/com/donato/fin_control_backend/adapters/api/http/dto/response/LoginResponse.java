@@ -1,6 +1,5 @@
 package com.donato.fin_control_backend.adapters.api.http.dto.response;
 
-import com.donato.fin_control_backend.adapters.api.http.dto.UserDTO;
 import lombok.*;
 
 @Getter

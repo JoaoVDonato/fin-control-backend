@@ -18,7 +18,7 @@ public class CreateUserCommand {
     public static CreateUserCommand from(CreateUserDTO createUserDTO){
         return CreateUserCommand.builder()
                 .email(createUserDTO.email())
-                .password(createUserDTO.passwordHash())
+                .password(createUserDTO.password())
                 .phone(createUserDTO.phone())
                 .name(createUserDTO.name())
                 .build();

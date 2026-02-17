@@ -1,0 +1,37 @@
+name: fin-control-backend
+
+services:
+  service:
+    image: fin-control-backend:20240807-1653-2a2229e
+    pull_policy: never
+    restart: unless-stopped
+    environment:
+      TZ: America/Sao_Paulo
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+      OTEL_TRACES_EXPORTER: otlp
+      OTEL_LOGS_EXPORTER: otlp
+      OTEL_METRICS_EXPORTER: otlp
+      OTEL_SERVICE_NAME: fin-control-backend
+      OTEL_TRACER_SAMPLER: parentbased_always_on
+      OTEL_RESOURCE_ATTRIBUTES: service=fin-control-backend
+    volumes:
+      - ./service:/data
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 1gb
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+
+#networks:
+#  default:
+#    name: infra
+#    external: true
+
+networks:
+  default:
+    name: fin-control-backend
+    external: true

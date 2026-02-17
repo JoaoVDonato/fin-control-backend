@@ -17,6 +17,7 @@ public final class UserMapper {
                 .id(entity.getId())
                 .email(entity.getEmail())
                 .passwordHash(mapToPassword(entity.getPasswordHash()))
+                .active(entity.isActive())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
@@ -30,6 +31,7 @@ public final class UserMapper {
                 .id(domain.getId())
                 .email(domain.getEmail())
                 .passwordHash(mapToHash(domain.getPasswordHash()))
+                .active(domain.isActive())
                 .createdAt(domain.getCreatedAt())
                 .updatedAt(domain.getUpdatedAt())
                 .build();

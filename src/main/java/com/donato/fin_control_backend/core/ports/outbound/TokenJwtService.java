@@ -8,4 +8,8 @@ public interface TokenJwtService {
 
     String extractEmail(String token);
 
+    String extractJti(String token);
+
+    java.time.Instant extractExpiration(String token);
+
 }

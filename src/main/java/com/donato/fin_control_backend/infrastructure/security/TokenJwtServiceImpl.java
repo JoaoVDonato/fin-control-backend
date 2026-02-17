@@ -34,6 +34,7 @@ public class TokenJwtServiceImpl implements TokenJwtService {
             return JWT.create()
                     .withIssuer("fin-control")
                     .withSubject(userLogin.getEmail())
+                    .withJWTId(java.util.UUID.randomUUID().toString())
                     //.withClaim("role", userLogin.getPassword())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
@@ -55,6 +56,37 @@ public class TokenJwtServiceImpl implements TokenJwtService {
         }catch (JWTVerificationException jwtVerificationException){
             log.error("Erro ao validar token: {}", jwtVerificationException.getMessage());
             return "";
+        }
+    }
+
+    @Override
+    public String extractJti(String token) {
+        try{
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            DecodedJWT jwt =  JWT.require(algorithm)
+                    .withIssuer("fin-control")
+                    .build()
+                    .verify(token);
+            return jwt.getId();
+        }catch (JWTVerificationException jwtVerificationException){
+            log.error("Erro ao validar token: {}", jwtVerificationException.getMessage());
+            return "";
+        }
+    }
+
+    @Override
+    public java.time.Instant extractExpiration(String token) {
+        try{
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            DecodedJWT jwt =  JWT.require(algorithm)
+                    .withIssuer("fin-control")
+                    .build()
+                    .verify(token);
+            java.util.Date expiresAt = jwt.getExpiresAt();
+            return expiresAt == null ? null : expiresAt.toInstant();
+        }catch (JWTVerificationException jwtVerificationException){
+            log.error("Erro ao validar token: {}", jwtVerificationException.getMessage());
+            return null;
         }
     }
 
