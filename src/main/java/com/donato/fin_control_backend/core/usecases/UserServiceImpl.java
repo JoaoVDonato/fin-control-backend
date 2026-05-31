@@ -2,6 +2,7 @@ package com.donato.fin_control_backend.core.usecases;
 
 import com.donato.fin_control_backend.adapters.api.http.handler.PasswordValidationException;
 import com.donato.fin_control_backend.adapters.api.http.handler.UserNotLog;
+import com.donato.fin_control_backend.adapters.api.http.handler.DuplicateResourceException;
 import com.donato.fin_control_backend.core.domain.User;
 import com.donato.fin_control_backend.core.ports.inbound.UserService;
 import com.donato.fin_control_backend.core.ports.outbound.ProfileRepository;
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
         String email = createUserCommand.getEmail();
 
         userRepository.findByEmail(email).ifPresent(user -> {
-            throw new RuntimeException("Usuário já existe");
+            throw new DuplicateResourceException("Usuário já existe");
         });
 
         UserEntity userEntity = builderUser(createUserCommand);
@@ -64,27 +65,24 @@ public class UserServiceImpl implements UserService {
 
         ensureUserActive(userEntity);
 
-        if (isNotBlank(setUserCommand.getEmail()) && !setUserCommand.getEmail().equals(userEntity.getEmail())) {
+        boolean emailChanged = isNotBlank(setUserCommand.getEmail()) && !setUserCommand.getEmail().equals(userEntity.getEmail());
+        boolean passwordChanged = isNotBlank(setUserCommand.getNewPassword());
+        validateUserUpdateRequest(setUserCommand, emailChanged, passwordChanged);
+        validateCurrentPassword(setUserCommand.getNowPassword(), userEntity.getPasswordHash());
+
+        if (emailChanged) {
             ensureEmailAvailable(setUserCommand.getEmail());
             userEntity.setEmail(setUserCommand.getEmail());
         }
 
-        if (isNotBlank(setUserCommand.getNewPassword())) {
-            if (!isNotBlank(setUserCommand.getNowPassword())) {
-                throw new PasswordValidationException("A senha atual é obrigatória para alteração");
-            }
-
-            boolean matches = encoder.matches(setUserCommand.getNowPassword(), userEntity.getPasswordHash());
-            if (matches) {
-                String encode = encoder.encode(setUserCommand.getNewPassword());
-                userEntity.setPasswordHash(encode);
-            } else {
-                throw new PasswordValidationException("A senha atual está incorreta");
-            }
+        if (passwordChanged) {
+            String encode = encoder.encode(setUserCommand.getNewPassword());
+            userEntity.setPasswordHash(encode);
         }
 
         userEntity.setUpdatedAt(LocalDateTime.now());
         UserEntity updated = userRepository.save(userEntity);
+        revokeSessionsForUser(updated.getId());
 
         return UserMapper.toDomain(updated);
     }
@@ -127,12 +125,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setActive(false);
         userEntity.setUpdatedAt(LocalDateTime.now());
         userRepository.save(userEntity);
-
-        sessionRepository.findByUserId(userEntity.getId()).forEach(session -> {
-            session.setRevoked(true);
-            session.setLastUsedAt(LocalDateTime.now());
-            sessionRepository.save(session);
-        });
+        revokeSessionsForUser(userEntity.getId());
     }
 
     @Override
@@ -177,8 +170,17 @@ public class UserServiceImpl implements UserService {
 
     private void ensureEmailAvailable(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
-            throw new RuntimeException("Usuário já existe");
+            throw new DuplicateResourceException("Usuário já existe");
         });
+    }
+
+    private void validateUserUpdateRequest(SetUserCommand setUserCommand, boolean emailChanged, boolean passwordChanged) {
+        if (!emailChanged && !passwordChanged) {
+            throw new IllegalArgumentException("Informe ao menos um campo para alterar");
+        }
+        if (!isNotBlank(setUserCommand.getNowPassword())) {
+            throw new IllegalArgumentException("A senha atual é obrigatória para alterar email ou senha");
+        }
     }
 
     private boolean shouldCreateProfile(CreateUserCommand createUserCommand) {
@@ -193,6 +195,20 @@ public class UserServiceImpl implements UserService {
         if (!userEntity.isActive()) {
             throw new UserNotLog("Usuário desativado");
         }
+    }
+
+    private void validateCurrentPassword(String currentPassword, String currentPasswordHash) {
+        if (!encoder.matches(currentPassword, currentPasswordHash)) {
+            throw new PasswordValidationException("A senha atual está incorreta");
+        }
+    }
+
+    private void revokeSessionsForUser(Long userId) {
+        sessionRepository.findByUserId(userId).forEach(session -> {
+            session.setRevoked(true);
+            session.setLastUsedAt(LocalDateTime.now());
+            sessionRepository.save(session);
+        });
     }
 
     private void saveSession(String token, UserEntity userEntity) {

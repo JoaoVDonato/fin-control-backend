@@ -75,6 +75,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
@@ -123,17 +128,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<systemPropertyVariables>
-						<testcontainers.docker.socket.override>/var/run/docker.sock</testcontainers.docker.socket.override>
-						<docker.host>unix:///var/run/docker.sock</docker.host>
-						<DOCKER_API_VERSION>1.53</DOCKER_API_VERSION>
-					</systemPropertyVariables>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
@@ -146,6 +140,7 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.5.4</version>
 				<dependencies>
@@ -156,6 +151,17 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/*Tests.java</include>
+						<include>**/*TestCase.java</include>
+						<include>**/*IT.java</include>
+					</includes>
+					<systemPropertyVariables>
+						<testcontainers.docker.socket.override>/var/run/docker.sock</testcontainers.docker.socket.override>
+						<docker.host>unix:///var/run/docker.sock</docker.host>
+						<DOCKER_API_VERSION>1.53</DOCKER_API_VERSION>
+					</systemPropertyVariables>
 					<reportFormat>plain</reportFormat>
 					<consoleOutputReporter>
 						<disable>true</disable>
