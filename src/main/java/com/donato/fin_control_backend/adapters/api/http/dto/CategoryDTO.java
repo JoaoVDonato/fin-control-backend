@@ -1,22 +1,18 @@
-package com.donato.fin_control_backend.core.domain;
+package com.donato.fin_control_backend.adapters.api.http.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class Category {
+public class CategoryDTO {
     private Long id;
-    private User user;
     private String name;
     private String type;
-    private Category parent;
+    private Long parentId;
+    private String parentName;
     private String color;
     private String icon;
     private boolean active;

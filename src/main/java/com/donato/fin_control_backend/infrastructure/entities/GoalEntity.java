@@ -6,15 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "goals")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryEntity {
+public class GoalEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,21 +26,17 @@ public class CategoryEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 150, nullable = false)
     private String name;
 
-    @Column(length = 10, nullable = false)
-    private String type;
+    @Column(name = "target_amount", nullable = false, precision = 19, scale = 2)
+    private BigDecimal targetAmount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private CategoryEntity parent;
+    @Column(name = "current_amount", nullable = false, precision = 19, scale = 2)
+    private BigDecimal currentAmount;
 
-    @Column(length = 7)
-    private String color;
-
-    @Column(length = 50)
-    private String icon;
+    @Column
+    private LocalDate deadline;
 
     @Column(nullable = false)
     private boolean active;

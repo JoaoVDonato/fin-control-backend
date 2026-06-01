@@ -1,20 +1,15 @@
-package com.donato.fin_control_backend.core.domain;
+package com.donato.fin_control_backend.adapters.api.http.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class Account {
+public class AccountDTO {
     private Long id;
-    private User user;
     private String name;
     private String type;
     private BigDecimal balance;

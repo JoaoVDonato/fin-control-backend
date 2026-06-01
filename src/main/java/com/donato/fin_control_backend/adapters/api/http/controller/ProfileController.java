@@ -58,7 +58,7 @@ public class ProfileController {
     }
 
     private String extractToken(String token){
-        return token.replace("Bearer", "").trim();
+        return token.startsWith("Bearer ") ? token.substring(7) : token.trim();
     }
 
     private ProfileDTO toProfileDTO(Profile profile) {

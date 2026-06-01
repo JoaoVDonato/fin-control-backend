@@ -34,8 +34,23 @@ public class AccountEntity {
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal balance;
 
+    @Column(name = "initial_balance", nullable = false, precision = 19, scale = 2)
+    private BigDecimal initialBalance;
+
     @Column(length = 3, nullable = false)
     private String currency;
+
+    @Column(nullable = false)
+    private boolean archived;
+
+    @Column(length = 100)
+    private String institution;
+
+    @Column(length = 7)
+    private String color;
+
+    @Column(length = 50)
+    private String icon;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

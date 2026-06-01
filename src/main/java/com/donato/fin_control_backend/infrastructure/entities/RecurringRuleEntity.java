@@ -11,12 +11,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "recurring_rules")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TransactionEntity {
+public class RecurringRuleEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,39 +34,29 @@ public class TransactionEntity {
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
-    @Column(nullable = false)
-    private LocalDate date;
-
-    @Column(name = "settlement_date")
-    private LocalDate settlementDate;
-
     @Column(length = 20, nullable = false)
     private String type;
-
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Column(columnDefinition = "TEXT")
-    private String notes;
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Column(length = 20, nullable = false)
-    private String status;
+    private String frequency;
 
-    @Column(name = "is_installment", nullable = false)
-    private boolean installment;
+    @Column(name = "day_of_period")
+    private Integer dayOfPeriod;
 
-    @Column(name = "installment_total")
-    private Integer installmentTotal;
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
-    @Column(name = "installment_index")
-    private Integer installmentIndex;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transfer_peer_transaction_id")
-    private TransactionEntity transferPeer;
+    @Column(nullable = false)
+    private boolean active;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

@@ -16,7 +16,17 @@ public final class CategoryMapper {
                 .id(entity.getId())
                 .user(UserMapper.toDomain(entity.getUser()))
                 .name(entity.getName())
-                .parent(toDomain(entity.getParent()))
+                .type(entity.getType())
+                .parent(entity.getParent() != null
+                        ? Category.builder()
+                                .id(entity.getParent().getId())
+                                .name(entity.getParent().getName())
+                                .type(entity.getParent().getType())
+                                .build()
+                        : null)
+                .color(entity.getColor())
+                .icon(entity.getIcon())
+                .active(entity.isActive())
                 .createdAt(entity.getCreatedAt())
                 .build();
     }
@@ -29,7 +39,10 @@ public final class CategoryMapper {
                 .id(domain.getId())
                 .user(UserMapper.toEntity(domain.getUser()))
                 .name(domain.getName())
-                .parent(toEntity(domain.getParent()))
+                .type(domain.getType())
+                .color(domain.getColor())
+                .icon(domain.getIcon())
+                .active(domain.isActive())
                 .createdAt(domain.getCreatedAt())
                 .build();
     }

@@ -78,7 +78,7 @@ public class UserController {
     }
 
     private String extractToken(String token){
-        return token.replace("Bearer", "").trim();
+        return token.startsWith("Bearer ") ? token.substring(7) : token.trim();
     }
 
     private UserDTO toUserDTO(User user) {

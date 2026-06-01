@@ -6,15 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "budgets")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryEntity {
+public class BudgetEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,24 +25,18 @@ public class CategoryEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @Column(length = 100, nullable = false)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryEntity category;
 
-    @Column(length = 10, nullable = false)
-    private String type;
+    @Column(name = "period_month", nullable = false)
+    private int periodMonth;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private CategoryEntity parent;
+    @Column(name = "period_year", nullable = false)
+    private int periodYear;
 
-    @Column(length = 7)
-    private String color;
-
-    @Column(length = 50)
-    private String icon;
-
-    @Column(nullable = false)
-    private boolean active;
+    @Column(nullable = false, precision = 19, scale = 2)
+    private BigDecimal amount;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
